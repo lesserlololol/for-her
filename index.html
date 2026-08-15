@@ -254,6 +254,35 @@
     text-align:center;
   }
 
+  /* ---------- slide 4.5 : video clips ---------- */
+  #clips h3{
+    font-family:'Alex Brush', cursive;
+    font-size:2.4rem;
+    color:var(--deep);
+    font-weight:400;
+    margin-bottom:3vh;
+  }
+  .clip-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    max-width:420px;
+    width:100%;
+  }
+  .clip{
+    aspect-ratio:1/1;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 8px 18px rgba(58,46,46,0.18);
+    background:#000;
+  }
+  .clip video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
   /* ---------- slide 5 : song ---------- */
   #song h3{
     font-family:'Alex Brush', cursive;
@@ -355,6 +384,9 @@
       <div class="seal">♥</div>
     </div>
     <div class="tap-hint">tap the envelope to open it</div>
+    <audio id="bgAudio" loop preload="none">
+      <source src="intro-song.mp3" type="audio/mpeg">
+    </audio>
   </section>
 
   <!-- 2. LETTER -->
@@ -362,13 +394,13 @@
     <div class="paper">
       <h2>Dear Abi,</h2>
       <p>
-        I don’t think I’ll ever be able to put into words just how much you mean to me, 
-        but I hope you always know that I choose you, even on the days when things aren’t easy. 
-        I know I’m not perfect and I know I’ve expected too much from you sometimes, but I’m trying 
+        I don't think I'll ever be able to put into words just how much you mean to me, 
+        but I hope you always know that I choose you, even on the days when things aren't easy. 
+        I know I'm not perfect and I know I've expected too much from you sometimes, but I'm trying 
         to learn, to understand you better and to love you in a way that feels right for both of us. 
         I never want you to feel like you have to be someone else for me or like you have to earn your place in my life, 
         because you already have it. I love the little things about you, the way you make me laugh, 
-        the way you talk, your voice, your smile, even the parts of you that you probably don’t realise I notice. 
+        the way you talk, your voice, your smile, even the parts of you that you probably don't realise I notice. 
         I just want us to keep growing together, meeting each other halfway, and choosing each other through all the messy, 
         quiet, beautiful parts of life. No matter how loud life gets, I hope you can always come back to this and remember 
         that there is someone here who loves you deeply, believes in you, and is endlessly grateful that I get to call you mine.
@@ -407,6 +439,25 @@
     </div>
   </section>
 
+  <!-- 4.5 VIDEOS -->
+  <section id="clips">
+    <h3>little moments</h3>
+    <div class="clip-grid">
+      <div class="clip">
+        <video src="video1.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="clip">
+        <video src="video2.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="clip">
+        <video src="video3.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="clip">
+        <video src="video4.mp4" autoplay muted loop playsinline></video>
+      </div>
+    </div>
+  </section>
+
   <!-- 5. SONG -->
   <section id="song">
     <h3>a little reminder of us</h3>
@@ -440,8 +491,10 @@
 
   // envelope open
   const envelope = document.getElementById('envelope');
+  const bgAudio = document.getElementById('bgAudio');
   envelope.addEventListener('click', () => {
     envelope.classList.add('open');
+    bgAudio.play().catch(() => {});
     setTimeout(() => {
       document.getElementById('letter').scrollIntoView({behavior:'smooth'});
     }, 550);
@@ -474,15 +527,26 @@
   const playBtn = document.getElementById('playBtn');
   const restartBtn = document.getElementById('restartBtn');
   playBtn.addEventListener('click', () => {
-    if (audio.paused) { audio.play(); playBtn.textContent = '❙❙'; }
-    else { audio.pause(); playBtn.textContent = '▶'; }
+    if (audio.paused) {
+      bgAudio.pause();
+      audio.play();
+      playBtn.textContent = '❙❙';
+    } else {
+      audio.pause();
+      playBtn.textContent = '▶';
+      bgAudio.play().catch(() => {});
+    }
   });
   restartBtn.addEventListener('click', () => {
+    bgAudio.pause();
     audio.currentTime = 0;
     audio.play();
     playBtn.textContent = '❙❙';
   });
-  audio.addEventListener('ended', () => { playBtn.textContent = '▶'; });
+  audio.addEventListener('ended', () => {
+    playBtn.textContent = '▶';
+    bgAudio.play().catch(() => {});
+  });
 </script>
 
 </body>
